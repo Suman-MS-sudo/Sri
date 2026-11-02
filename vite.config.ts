@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
@@ -19,20 +19,34 @@ function loveRelay(): Plugin {
   }
 }
 
-export default defineConfig({
-  plugins: [react(), basicSsl(), loveRelay()],
-  // NEXT_PUBLIC_* is what Vercel's Supabase integration creates; VITE_* works for manual setup.
-  // Only the public URL and anon key are read in the app.
-  envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
-  // reachable from phones on the same network, over https (needed for sharing and copying links)
-  server: { host: true },
-  preview: { host: true },
-  build: {
-    target: 'es2020',
-    rollupOptions: {
-      output: {
-        manualChunks: { react: ['react', 'react-dom'], motion: ['framer-motion'] },
+export default defineConfig(({ mode }) => {
+  // Supabase settings may arrive under several names, depending on how the Vercel integration was
+  // set up. Only the project URL and the PUBLIC key are passed to the site; the integration also
+  // adds secret keys (service role, Postgres password), which must never reach the browser.
+  const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env } as Record<string, string | undefined>
+  const pick = (...names: string[]) => names.map(n => env[n]).find(Boolean) ?? ''
+  const supabaseUrl = pick('VITE_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'NEXT_SUPABASE_URL', 'SUPABASE_URL')
+  const supabaseKey = pick(
+    'VITE_SUPABASE_ANON_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'NEXT_SUPABASE_ANON_KEY', 'SUPABASE_ANON_KEY',
+    'VITE_SUPABASE_PUBLISHABLE_KEY', 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY', 'NEXT_SUPABASE_PUBLISHABLE_KEY', 'SUPABASE_PUBLISHABLE_KEY',
+  )
+
+  return {
+    plugins: [react(), basicSsl(), loveRelay()],
+    define: {
+      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabaseUrl),
+      'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(supabaseKey),
+    },
+    // reachable from phones on the same network, over https (needed for sharing and copying links)
+    server: { host: true },
+    preview: { host: true },
+    build: {
+      target: 'es2020',
+      rollupOptions: {
+        output: {
+          manualChunks: { react: ['react', 'react-dom'], motion: ['framer-motion'] },
+        },
       },
     },
-  },
+  }
 })

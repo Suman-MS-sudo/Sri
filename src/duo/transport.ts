@@ -9,9 +9,10 @@ export type Message = { type: string; from: string; [k: string]: unknown }
 export type Room = { send: (m: Message) => void; leave: () => void }
 type Handlers = { onMessage: (m: Message) => void; onOnline: (ids: string[]) => void }
 
-const env = import.meta.env as Record<string, string | undefined>
-const URL = env.VITE_SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL
-const KEY = env.VITE_SUPABASE_ANON_KEY || env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// filled in at build time from whichever Supabase variables exist (see vite.config.ts);
+// only the project URL and the public key, never the secret ones
+const URL = import.meta.env.VITE_SUPABASE_URL as string
+const KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 const supabase = URL && KEY ? createClient(URL, KEY, { auth: { persistSession: false } }) : null
 const hot = import.meta.hot
 
