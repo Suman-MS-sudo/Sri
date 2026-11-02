@@ -1,0 +1,22 @@
+node_modules
+dist
+*.local
+
+# her original face pictures stay local; the processed set in src/portrait/faces is what ships
+faces-source/*
+!faces-source/_framing-guide.png
+
+# original phone photos; the web versions live in public/images/gallery
+photos-source/
+.env
+.env.*
+!.env.example
+
+# the old Next.js site, kept locally for reference only
+_archive/
+
+# Vercel CLI settings
+.vercel
+
+# build cache from the old Next.js site
+.next/
