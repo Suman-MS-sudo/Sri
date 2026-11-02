@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Headphones, Images, RotateCcw } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
-import { HER, TALE, type TaleChat } from '../../content/love'
+import { HER, ME, TALE, type TaleChat } from '../../content/love'
 import { ScreenBackground, TAB_BAR_H, type Tab } from '../ui'
 
 const EASE = [0.16, 1, 0.3, 1] as const
@@ -202,17 +202,16 @@ function Cover({ onStart }: { onStart: () => void }) {
   return (
     <div className="flex flex-col">
       <Stage style={{ background: 'radial-gradient(80% 70% at 50% 60%, rgba(237,180,11,.18), transparent 70%)' }}>
-        {/* two friends, eight years, drawing closer */}
-        <motion.div className="absolute top-1/2 flex h-24 w-24 -translate-y-1/2 items-center justify-center rounded-full bg-app-gold text-[30px] font-semibold text-black shadow-[0_0_30px_rgba(237,180,11,.5)]"
-          initial={{ left: '4%' }} animate={{ left: '20%' }} transition={{ delay: 0.4, duration: 1.6, ease: EASE }}>
-          me
-        </motion.div>
+        {/* two friends, eight years, drawing closer: her first, then me */}
         <motion.img src={HER.face} alt="Sami" className="absolute top-1/2 h-24 w-24 -translate-y-1/2 rounded-full ring-2 ring-[#FF5C8A] shadow-[0_0_30px_rgba(255,92,138,.45)]"
+          initial={{ left: '4%' }} animate={{ left: '20%' }} transition={{ delay: 0.4, duration: 1.6, ease: EASE }} />
+        <motion.img src={ME.face} alt={ME.alt} className="absolute top-1/2 h-24 w-24 -translate-y-1/2 rounded-full ring-2 ring-app-gold shadow-[0_0_30px_rgba(237,180,11,.5)]"
           initial={{ right: '4%' }} animate={{ right: '20%' }} transition={{ delay: 0.4, duration: 1.6, ease: EASE }} />
-        <motion.span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[38px]"
-          initial={{ scale: 0, opacity: 0 }} animate={{ scale: [0, 1.4, 1], opacity: 1 }} transition={{ delay: 1.9, duration: 0.7 }}>
-          ❤️
-        </motion.span>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <motion.span className="text-[38px]" initial={{ scale: 0, opacity: 0 }} animate={{ scale: [0, 1.4, 1], opacity: 1 }} transition={{ delay: 1.9, duration: 0.7 }}>
+            ❤️
+          </motion.span>
+        </div>
         <span className="absolute inset-x-0 bottom-3 text-center text-[11px] uppercase tracking-[0.3em] text-white/45">TCS · 8 years → forever</span>
       </Stage>
       <motion.p className="mt-6 text-[13px] font-semibold tracking-[0.14em] text-app-gold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>

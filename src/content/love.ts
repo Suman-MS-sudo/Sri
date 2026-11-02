@@ -178,3 +178,6 @@ export const TALE = {
     },
   ],
 }
+
+// My round portrait (from photos-source/IMG_20230611_131703.jpg), next to hers on the story's cover.
+export const ME = { face: '/images/him-face.webp', alt: 'Me' }
